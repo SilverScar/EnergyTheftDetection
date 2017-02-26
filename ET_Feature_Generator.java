@@ -22,7 +22,7 @@ public class ET_Feature_Generator {
         Random rand = new Random();
         while(t>0){
             int flag = rand.nextInt(2);
-            int n = rand.nextInt(900)+20;
+            int n = rand.nextInt(980)+20;
             double prob = 0.1 + 0.5*rand.nextDouble();
             if(flag==0)
                 generateRejections(n,prob);
@@ -69,7 +69,7 @@ public class ET_Feature_Generator {
         backwardSubstitution(smartMeters, n-1, n, 0, null, honesty_coefficients);
         dishonest_meters=0;
         for(int i=0;i<n;i++){
-            if(honesty_coefficients[i]>0.5 && honesty_coefficients[i]<1.5)
+            if(honesty_coefficients[i]>0.8 && honesty_coefficients[i]<1.2)
                 continue;
             dishonest_meters++;
         }
@@ -78,13 +78,15 @@ public class ET_Feature_Generator {
     
     public static void tamperValues(int n, SmartMeter[] smartMeters, double[] aggregator_readings, int dishonest_meters){
         Random rand = new Random();
+        dishonest_meters = rand.nextInt(dishonest_meters)+1;
         for(int i=0;i<dishonest_meters;i++){
             int uid = rand.nextInt(n-1);
-            int span = rand.nextInt(n)+n/10;
+            int span = rand.nextInt(6)+2;
             int st_ind = rand.nextInt(n-1);
             double theft_rate = 1.1 + 8.9*rand.nextDouble();
             for(int j=st_ind;j<n && j<st_ind+span-1;j++)
-                aggregator_readings[j]+=smartMeters[uid].meter_readings[j]*(theft_rate-1);
+                smartMeters[uid].meter_readings[j]/=theft_rate;
+            //smartMeters[uid].meter_readings[st_ind]/=theft_rate;
         }
     }
     
